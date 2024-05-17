@@ -1,12 +1,25 @@
-<<<<<<< HEAD
-# sonamsoni12
-=======
-name: hello-world
-'on': push
+name: Example Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      who-to-greet:
+        description: Who to greet in the log
+        required: true
+        default: 'World'
+        type: string
+
 jobs:
-  my-job:
+  say-hello:
+    name: Say Hello
     runs-on: ubuntu-latest
+
     steps:
-      - name: my-step
-        run: echo "Hello World!"
->>>>>>> dd72ef1399ab793ea7aaa174ca580a53796deaa5
+      # Change @main to a specific commit SHA or version tag, e.g.:
+      # actions/hello-world-docker-action@e76147da8e5c81eaf017dede5645551d4b94427b
+      # actions/hello-world-docker-action@v1.2.3
+      - name: Print to Log
+        id: print-to-log
+        uses: actions/hello-world-docker-action@main
+        with:
+          who-to-greet: ${{ inputs.who-to-greet }}
