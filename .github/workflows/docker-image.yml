@@ -16,3 +16,15 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: Docker login
+      uses: docker/login-action@v3.0.0
+      with:
+        registry: ${{ secrets.DOCKER_REGISTRY_DEV }}
+        username: ${{ secrets.DOCKER_ID_DEV }}
+        password: ${{ secrets.DOCKER_PASSWORD_DEV }}
+    - name: Docker build and push
+      run: |
+          cd "${{ github.workspace }}/Services"
+          docker build . --file Product/Api/Dockerfile --tag prism/product:${{ github.run_id }}
+          docker tag prism/product:${{ github.run_id }} prismacrdev01.azurecr.io/prism/product:${{ github.run_id }}
+          docker push azcrdev01.azurecr.io/prism/product:${{ github.run_id }}
