@@ -1,25 +1,24 @@
-name: Example Workflow
-
+name: build_image
 on:
-  workflow_dispatch:
-    inputs:
-      who-to-greet:
-        description: Who to greet in the log
-        required: true
-        default: 'World'
-        type: string
-
+  push:
+    paths:
+      - "src/docker/**"
 jobs:
-  say-hello:
-    name: Say Hello
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      # Change @main to a specific commit SHA or version tag, e.g.:
-      # actions/hello-world-docker-action@e76147da8e5c81eaf017dede5645551d4b94427b
-      # actions/hello-world-docker-action@v1.2.3
-      - name: Print to Log
-        id: print-to-log
-        uses: actions/hello-world-docker-action@main
+      - name: ACR build
+        id: acr
+        uses: azure/acr-build@v1
         with:
-          who-to-greet: ${{ inputs.who-to-greet }}
+          service_principal: ${{ secrets.service_principal }}
+          service_principal_password: ${{ secrets.service_principal_password }}
+          tenant: ${{ secrets.tenant }}
+          registry: ${{ secrets.registry }}
+          repository: ${{ secrets.repository }}
+          image: image
+          git_access_token: ${{ secrets.git_access_token }}
+          folder: src/docker
+          dockerfile: ../../dockerfiles/Dockerfile
+          branch: main
+          build_args: '[{"arg_one":"value_one"}, {"arg_two":"value_two"}]'
