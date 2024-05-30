@@ -3,7 +3,7 @@ name: Linux_Container_Workflow
 
 jobs:
     build-and-deploy:
-        runs-on: self-hosted
+        runs-on: pg_custom_runner_ubuntu22
         steps:
         # checkout the repo
         - name: 'Checkout GitHub Action'
